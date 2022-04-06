@@ -1,0 +1,5 @@
+[MASTER]
+disable=C0114,C0116,C0115
+good-names-rgxs=^[_a-z][_a-z0-9]?$
+load-plugins=pylint_django
+django-settings-module=Dentistry.settings
