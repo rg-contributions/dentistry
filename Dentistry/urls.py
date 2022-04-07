@@ -15,7 +15,17 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from DentistryApp import views
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path("admin/", admin.site.urls),
+    path("main", views.main, name="view-main"),
+    path("", views.main),
+    path("register", views.register),
+    path("do_register", views.do_register),
+    path("do_reserve", views.do_reserve),
+    path("do_login", views.do_login),
+    path("do_logout", views.do_logout),
+    path("past_reservations", views.past_reservations),
+    path("check_date", views.check_date),
 ]
