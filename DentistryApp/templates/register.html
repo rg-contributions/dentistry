@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block page_title %}Register a Patient{% endblock %}
+
+{% block body %}
+Please register yourself
+<p>
+<form action=do_register method="POST">
+	{% csrf_token %}
+	{{ register_form }}
+	<input type="submit" value="Register">
+</form>
+{% endblock %}

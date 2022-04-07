@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block page_title %}Past Reservations{% endblock %}
+
+{% block body %}
+<b>Patient:</b> {{ user_name }} <p>
+<b>Reservations:</b>
+<table>
+	<th>Doctor</th><th>Date</th>
+	{% for p in reservations %}
+	<tr><td>{{ p.doctor.name }}</td><td>{{ p.timeslot }}</td></tr>
+	{% endfor %}
+</table>
+<p><a href=main>Return to the main page</a>
+{% endblock %}

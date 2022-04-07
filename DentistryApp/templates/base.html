@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en" class="no-js">
+<head>
+    <meta charset="utf-8">
+    <title>Maxim's Super Dentistry</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+	<header>
+		<div id="logo"><img src="/logo.png">Maxim's Super Dentistry: {% block page_title %}{% endblock %}</div>
+		<nav>  
+			<ul>
+				<li><a href="/">Home</a>
+				<!-- {% block body2 %}<li><a href="https://html-css-js.com/">HTML</a>ba {% endblock %} -->
+				<li><a href="https://html-css-js.com/css/code/">CSS</a>
+				<li><a href="https://htmlcheatsheet.com/js/">JS</a>
+			</ul>
+		</nav>
+	</header>
+	
+	<section>
+
+		{% block body %}{% endblock %}
+
+	</section>
+
+	<footer>
+		<p>Powered by <a href="https://html5-templates.com/" target="_blank" rel="nofollow">HTML5 Templates</a></p>
+	</footer>
+</body>
+</html>
