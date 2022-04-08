@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.db import transaction
 from django.http import HttpResponse
 from DentistryApp.forms import LoginForm, RegisterForm, ReserveForm
@@ -21,12 +21,23 @@ def main(request):
     return render(
         request,
         "main.html",
-        {"user": user_login, "login_form": LoginForm(), "reserve_form": reserve_form},
+        {
+            "user_login": user_login,
+            "login_form": LoginForm(),
+            "reserve_form": reserve_form,
+        },
     )
 
 
 def register(request):
-    return render(request, "register.html", {"register_form": RegisterForm()})
+    return render(
+        request,
+        "register.html",
+        {
+            "register_form": RegisterForm(),
+            "login_form": LoginForm(),
+        },
+    )
 
 
 def register_patient_data(f):
@@ -128,7 +139,9 @@ def past_reservations(request):
     r_list = Reservation.objects.filter(patient=p).order_by("-timeslot")
 
     return render(
-        request, "past_reservations.html", {"user_name": p.name, "reservations": r_list}
+        request,
+        "past_reservations.html",
+        {"user_login": user_login, "user_name": p.name, "reservations": r_list},
     )
 
 

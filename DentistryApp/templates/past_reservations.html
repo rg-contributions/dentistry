@@ -1,15 +1,17 @@
-{% extends "base.html" %}
+{% extends "base_ext.html" %}
 
 {% block page_title %}Past Reservations{% endblock %}
 
 {% block body %}
+<section>
+
 <b>Patient:</b> {{ user_name }} <p>
 <b>Reservations:</b>
 <table>
 	<th>Doctor</th><th>Date</th>
 	{% for p in reservations %}
-	<tr><td>{{ p.doctor.name }}</td><td>{{ p.timeslot }}</td></tr>
+	<tr><td style="padding-right:10px">{{ p.doctor.name }}</td><td>{{ p.timeslot }}</td></tr>
 	{% endfor %}
 </table>
-<p><a href=main>Return to the main page</a>
+</section>
 {% endblock %}

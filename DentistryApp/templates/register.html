@@ -1,13 +1,17 @@
-{% extends "base.html" %}
+{% extends "base_ext.html" %}
 
 {% block page_title %}Register a Patient{% endblock %}
+{% block register %} {% endblock %}
 
 {% block body %}
+
+<section>
 Please register yourself
 <p>
 <form action=do_register method="POST">
 	{% csrf_token %}
-	{{ register_form }}
+	{{ register_form.as_p }}
 	<input type="submit" value="Register">
 </form>
+</section>
 {% endblock %}

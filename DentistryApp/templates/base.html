@@ -1,29 +1,28 @@
+{% load static %}
+
 <!doctype html>
 <html lang="en" class="no-js">
 <head>
     <meta charset="utf-8">
     <title>Maxim's Super Dentistry</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href={% static "/style.css" %}>
 </head>
 
 <body>
 	<header>
-		<div id="logo"><img src="/logo.png">Maxim's Super Dentistry: {% block page_title %}{% endblock %}</div>
+		<div id="logo"><a href="/"><img src={% static "/logo.png" %}></a>Maxim's Super Dentistry: {% block page_title %}{% endblock %}</div>
+		<p></p>
 		<nav>  
 			<ul>
-				<li><a href="/">Home</a>
-				<!-- {% block body2 %}<li><a href="https://html-css-js.com/">HTML</a>ba {% endblock %} -->
-				<li><a href="https://html-css-js.com/css/code/">CSS</a>
-				<li><a href="https://htmlcheatsheet.com/js/">JS</a>
+				<li><a href="/">Home</a></li>
+				<li>{% block login %} {% endblock %}</li>
+				<li>{% block register %} {% endblock %}</li>
+				<li>{% block reservations %} {% endblock %}</li>
 			</ul>
 		</nav>
 	</header>
 	
-	<section>
-
-		{% block body %}{% endblock %}
-
-	</section>
+	{% block body %}{% endblock %}
 
 	<footer>
 		<p>Powered by <a href="https://html5-templates.com/" target="_blank" rel="nofollow">HTML5 Templates</a></p>

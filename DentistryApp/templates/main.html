@@ -1,35 +1,20 @@
-{% extends "base.html" %}
+{% extends "base_ext.html" %}
+
 {% block page_title %}Main Page{% endblock %}
 
 {% block body %}
-{% if user %}
 
-Hi, {{ user }}!
-<p><a href=past_reservations>Past reservations</a>
-<p><a href=do_logout>Logout</a>
-
-{% else %}
-
-<form action=do_login method="POST">
-{% csrf_token %}
-{{ login_form }}
-<input type="submit" value="Login">
-</form>
-<p><a href=register>Register</a>
-
-{% endif %}
-
-<p>New Reservation:
-<p><form action=do_reserve method="POST">
-	{% csrf_token %}
-	
-	<table>
-	{{ reserve_form.as_table }}
-	<tr><td colspan=2 id="check_date_result"></td></tr>
-	</table>
-	
-	<input type="submit" value="Reserve">
-</form>
+<section>
+	<form action=do_reserve method="POST">
+		{% csrf_token %}
+		<table>
+			<tr><th colspan="2">New Reservation</th></tr>
+			{{ reserve_form.as_table }}
+		</table>
+		<!-- <tr><td colspan=2 id="check_date_result"></td></tr> -->
+		<input type="submit" value="Reserve">
+	</form>
+</section>
 
 <!-- <input type="button" value="Test" onclick="checkDate();"> -->
 {% endblock %}
