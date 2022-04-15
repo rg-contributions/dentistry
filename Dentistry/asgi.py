@@ -9,8 +9,12 @@ https://docs.djangoproject.com/en/4.0/howto/deployment/asgi/
 
 import os
 
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "Dentistry.settings")
+
 from django.core.asgi import get_asgi_application
+from channels.routing import ProtocolTypeRouter
+from turbo.consumers import TurboStreamsConsumer
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'Dentistry.settings')
-
-application = get_asgi_application()
+application = ProtocolTypeRouter(
+    {"http": get_asgi_application(), "websocket": TurboStreamsConsumer.as_asgi()}
+)

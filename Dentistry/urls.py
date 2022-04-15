@@ -19,10 +19,11 @@ from DentistryApp import views
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("main", views.main, name="view-main"),
-    path("", views.main),
+    path("", views.main, name="view-main"),
+    path("home", views.home),
     path("register", views.register),
     path("do_register", views.do_register),
+    path("check_login", views.check_login),
     path("do_reserve", views.do_reserve),
     path("do_login", views.do_login),
     path("do_logout", views.do_logout),

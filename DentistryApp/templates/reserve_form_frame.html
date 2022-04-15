@@ -1,0 +1,11 @@
+<turbo-frame id=reserve_form_frame>
+	<form action=check_date method="POST">
+	{% csrf_token %}
+	<table>
+		<tr><th colspan="2">New Reservation</th></tr>
+		{{ reserve_form.as_table }}
+	</table>
+	<div id="check_date_result">{{ date_result }}</div>
+	<input type="submit" value="Reserve" formaction="do_reserve">
+</form>
+</turbo-frame>

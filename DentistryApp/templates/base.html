@@ -1,4 +1,5 @@
 {% load static %}
+{% load turbo_streams %}
 
 <!doctype html>
 <html lang="en" class="no-js">
@@ -6,23 +7,33 @@
     <meta charset="utf-8">
     <title>Maxim's Super Dentistry</title>
     <link rel="stylesheet" href={% static "/style.css" %}>
+	<link rel="shortcut icon" href="{% static 'favicon.ico' %}"/>
+
+	<!-- should be at the end of head; subscribe should be after head.html -->
+	{% include "turbo/head.html" %}
+	{% turbo_subscribe 'DentistryApp:AppStream' %}
 </head>
 
 <body>
 	<header>
-		<div id="logo"><a href="/"><img src={% static "/logo.png" %}></a>Maxim's Super Dentistry: {% block page_title %}{% endblock %}</div>
+		<div id="logo"><turbo-frame id="home_frame0"><a href="/home">
+			<img src={% static "/logo.png" %}></a></turbo-frame>Maxim's Super Dentistry</div>
 		<p></p>
 		<nav>  
 			<ul>
-				<li><a href="/">Home</a></li>
-				<li>{% block login %} {% endblock %}</li>
-				<li>{% block register %} {% endblock %}</li>
-				<li>{% block reservations %} {% endblock %}</li>
+				<li><turbo-frame id="home_frame1"><a href="/home">Home</a></turbo-frame></li>
+				<li>{% include "login_logout_frame.html" %}</li>
+				<li>{% include "register_frame.html" %}</li>
+				<li>{% include "reservations_frame.html" %}</li>
 			</ul>
 		</nav>
 	</header>
 	
-	{% block body %}{% endblock %}
+	<section>
+		<turbo-frame id="main_box">
+			{% include "reserve_form_frame.html" %}
+		</turbo-frame>
+	</section>
 
 	<footer>
 		<p>Powered by <a href="https://html5-templates.com/" target="_blank" rel="nofollow">HTML5 Templates</a></p>

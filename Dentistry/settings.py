@@ -32,6 +32,8 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     "DentistryApp",
+    "turbo",
+    "channels",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -40,8 +42,21 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
 ]
 
+CHANNEL_LAYERS = {
+    "default": {
+        # You will need to `pip install channels_redis` and configure a redis instance.
+        # Using InMemoryChannelLayer will not work as the memory is not shared between threads.
+        # See https://channels.readthedocs.io/en/latest/topics/channel_layers.html
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [("127.0.0.1", 6379)],
+        },
+    }
+}
+
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -68,7 +83,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = "Dentistry.wsgi.application"
+ASGI_APPLICATION = "Dentistry.asgi.application"
 
 
 # Database
@@ -117,6 +132,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 
 STATIC_URL = "static/"
+STATIC_ROOT = "static-prod/"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
