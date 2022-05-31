@@ -3,3 +3,5 @@ syntax: glob
 Dentistry/__pycache__/**
 DentistryApp/__pycache__/**
 DentistryApp/migrations/__pycache__/**
+static-prod/**
+redis/**
