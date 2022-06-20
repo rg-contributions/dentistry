@@ -1,7 +1,6 @@
 syntax: glob
 .venv/**
-Dentistry/__pycache__/**
-DentistryApp/__pycache__/**
-DentistryApp/migrations/__pycache__/**
+**/__pycache__/**
+.pytest_cache/**
 static-prod/**
 redis/**
