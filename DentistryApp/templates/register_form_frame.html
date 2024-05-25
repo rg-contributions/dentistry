@@ -1,10 +1,18 @@
-<turbo-frame id="register_form_frame">
-	Please register yourself
-	<p id=login_check_result>&nbsp;</p>
+{% if registered_ok %}
+	Registered successfully!
 	<p>
-		<form action=check_login method="POST">
-		{% csrf_token %}
+		<a href="/home">Go home</a>
+	</p>
+{% else %}
+	{% if reg_error %}
+		<p>Cannot register!<p><b>{{ reg_error|safe }}</b><p>&nbsp;</p>
+	{% endif %}
+
+	Please register yourself
+	<p id="check_regform_result"></p>
+	<p>
+	<form>
 		{{ register_form.as_p }}
-		<input type="submit" value="Register" formaction="do_register">
+		<input type="submit" value="Submit" hx-post="/do_register" hx-target="#main_box">
 	</form>
-</turbo-frame>
+{% endif %}

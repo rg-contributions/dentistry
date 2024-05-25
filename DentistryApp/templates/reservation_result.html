@@ -1,0 +1,9 @@
+{% if error %}
+	{{ error|safe }}
+	<p><p><a href="/reserve_form_frame" hx-post="/reserve_form_frame" hx-target="#main_box">Try again</a>
+{% else %}
+	Here are your reservation details:<p>
+	<b>Patient:</b> {{ patient_name }}<p>
+	<b>Doctor:</b> {{ doctor_name }}<p>
+	<b>Date:</b> {{ timeslot }}<p>
+{% endif %}

@@ -13,6 +13,7 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+
 from django.contrib import admin
 from django.urls import path
 from DentistryApp import views
@@ -20,13 +21,18 @@ from DentistryApp import views
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("", views.main, name="view-main"),
-    path("home", views.home),
-    path("register", views.register),
+    path("home", views.main),
+    path("login_frame", views.login_frame),
+    path("login_frame", views.login_frame),
+    path("register_frame", views.register_frame),
+    path("reservations_frame", views.reservations_frame),
+    path("register_form_frame", views.register_form_frame),
+    path("reserve_form_frame", views.reserve_form_frame),
     path("do_register", views.do_register),
-    path("check_login", views.check_login),
+    path("do_check_regform", views.do_check_regform),
     path("do_reserve", views.do_reserve),
+    path("do_check_reserve", views.do_check_reserve),
     path("do_login", views.do_login),
     path("do_logout", views.do_logout),
     path("past_reservations", views.past_reservations),
-    path("check_date", views.check_date),
 ]

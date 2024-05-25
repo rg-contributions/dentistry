@@ -2,96 +2,49 @@ from django.shortcuts import render
 from django.db import transaction
 from django.http import HttpResponse
 from django.contrib.auth.hashers import make_password, check_password
-from turbo.shortcuts import render_frame, render_frame_string
+from django_htmx.http import trigger_client_event
+
 from DentistryApp.forms import LoginForm, RegisterForm, ReserveForm
 from DentistryApp.models import Patient, Doctor, Reservation
-from DentistryApp.streams import AppStream
 
-MAX_DAILY_RESERVATIONS = 5
+MAX_DAILY_RESERVATIONS = 4
 
 
-def main(request, reset_home=False):
+def main(request):
+    return render(request, "base.html")
+
+
+def login_frame(request, error=""):
     login = request.session.get("authorized_user_login", None)
-    user_name = None if not login else Patient.objects.filter(login=login).get().name
-    doctor_names = [d.name for d in Doctor.objects.all()]
-    reserve_form = ReserveForm(doctors=doctor_names, patient=user_name)
-
-    if reset_home:
-        r = render_frame(
-            request,
-            "reserve_form_frame.html",
-            {"reserve_form": reserve_form},
-        ).update(id="main_box")
-        AppStream().stream(r)
+    # error = request.session.get("last_login_error", "")
 
     return render(
         request,
-        "base.html",
-        {
-            "user_login": login,
-            "login_form": LoginForm(),
-            "reserve_form": reserve_form,
-        },
+        "login_logout_frame.html",
+        {"login_form": LoginForm(), "user_login": login, "login_error": error},
     )
 
 
-def refresh_header_frames(login):
-    c = {"user_login": login}
-    AppStream().update("register_frame.html", c, id="register_frame")
-    AppStream().update("reservations_frame.html", c, id="reservations_frame")
-
-
-def home(request):
-    return main(request, True)
-
-
-def do_login(request):
-    f = LoginForm(request.POST)
-    result = ""
-    try:
-        if not f.is_valid():
-            raise RuntimeError()
-
-        p = Patient.objects.filter(login=f.cleaned_data["login"])
-        if len(p) == 0 or not check_password(f.cleaned_data["password"], p[0].password):
-            raise RuntimeError()
-
-        request.session["authorized_user_login"] = p[0].login
-        refresh_header_frames(p[0].login)
-
-    except RuntimeError:
-        result = "Wrong username or password."
-
-    main(request, True)  # refresh "new reservations"
+def register_frame(request):
     login = request.session.get("authorized_user_login", None)
-
-    return (
-        render_frame(
-            request,
-            "login_logout_frame.html",
-            {"login_form": f, "user_login": login, "login_result": result},
-        )
-        .replace(id="login_logout_frame")
-        .response
-    )
+    return render(request, "register_frame.html", {"user_login": login})
 
 
-def do_logout(request):
-    request.session["authorized_user_login"] = None
-    refresh_header_frames(None)
-    return home(request)
+def reservations_frame(request):
+    login = request.session.get("authorized_user_login", None)
+    return render(request, "reservations_frame.html", {"user_login": login})
 
 
-def register(request):
-    r = render_frame(
+def register_form_frame(request, registered_ok=False, reg_error=""):
+    return render(
         request,
         "register_form_frame.html",
-        {"register_form": RegisterForm()},
-    ).update(id="main_box")
-
-    AppStream().stream(r)
-
-    return HttpResponse("")
+        {
+            "registered_ok": registered_ok,
+            "reg_error": reg_error,
+            "register_form": RegisterForm(),
+        },
+    )
 
 
 def register_patient_data(f):
@@ -110,28 +63,29 @@ def register_patient_data(f):
         raise RuntimeError("Passwords do not match.")
 
     Patient.objects.create(name=name, login=login, password=make_password(password))
+    return login
 
 
 def do_register(request):
+    reg_error = None
     f = RegisterForm(request.POST)
+    evt = ""
+
     try:
-        register_patient_data(f)
-        r = "Registration successful!"
+        login = register_patient_data(f)
+        evt = "evt_login"
+        do_login_user(request, login)
+
     except RuntimeError as e:
-        r = str(e)
+        reg_error = str(e)
 
-    AppStream().update(text=r, id="main_box")
-
-    return (
-        render_frame(request, "register_form_frame.html", {"register_form": f})
-        .update(id="register_form_frame")
-        .response
-    )
+    response = register_form_frame(request, reg_error is None, reg_error)
+    return trigger_client_event(response, evt)
 
 
-def check_login(request):
+def do_check_regform(request):
     f = RegisterForm(request.POST)
-    r = " "
+    r = ""
 
     p = Patient.objects.filter(login=f.data["reg_login"])
     if len(p) != 0:
@@ -140,9 +94,50 @@ def check_login(request):
     if f.data["reg_password"] != f.data["passagain"]:
         r = "Passwords don't match!"
 
-    AppStream().update(text=r, id="login_check_result")
+    return HttpResponse(r)
 
-    return HttpResponse("")
+
+def do_login_user(request, login):
+    request.session["authorized_user_login"] = login
+
+
+def do_login(request):
+    f = LoginForm(request.POST)
+    error = ""
+    evt = ""
+    try:
+        if not f.is_valid():
+            raise RuntimeError()
+
+        p = Patient.objects.filter(login=f.cleaned_data["login"])
+        if len(p) == 0 or not check_password(f.cleaned_data["password"], p[0].password):
+            raise RuntimeError()
+
+        do_login_user(request, p[0].login)
+        evt = "evt_login"
+
+    except RuntimeError:
+        error = "Wrong username or password."
+
+    return trigger_client_event(login_frame(request, error), evt)
+
+
+def load_login_logout_frame(request):
+    return render(request, "test-form.html", {"counter": None})
+
+
+def do_logout(request):
+    request.session["authorized_user_login"] = None
+    return trigger_client_event(login_frame(request), "evt_login")
+
+
+def reserve_form_frame(request):
+    login = request.session.get("authorized_user_login", None)
+    user_name = None if not login else Patient.objects.filter(login=login).get().name
+    doctor_names = [d.name for d in Doctor.objects.all()]
+    reserve_form = ReserveForm(doctors=doctor_names, patient=user_name)
+
+    return render(request, "reserve_form_frame.html", {"reserve_form": reserve_form})
 
 
 def reserve_appointment(f, user_login):
@@ -171,9 +166,9 @@ def do_reserve(request):
 
     try:
         reserve_appointment(f, user_login)
-        result = render_frame(
+        result = render(
             request,
-            "reservation_ok.html",
+            "reservation_result.html",
             {
                 "patient_name": f.cleaned_data["patient"],
                 "doctor_name": f.cleaned_data["doctor"],
@@ -181,9 +176,9 @@ def do_reserve(request):
             },
         )
     except RuntimeError as e:
-        result = render_frame_string(e)
+        result = render(request, "reservation_result.html", {"error": str(e)})
 
-    return result.update(id="reserve_form_frame").response
+    return result
 
 
 def past_reservations(request):
@@ -191,29 +186,27 @@ def past_reservations(request):
     p = Patient.objects.filter(login=user_login).get()
     r_list = Reservation.objects.filter(patient=p).order_by("-timeslot")
 
-    AppStream().update(
-        id="main_box",
-        template="past_reservations.html",
-        context={
+    return render(
+        request,
+        "past_reservations.html",
+        {
             "user_login": user_login,
             "user_name": p.name,
             "reservations": r_list,
         },
     )
 
-    return HttpResponse("")
 
-
-def check_date(request):
+def do_check_reserve(request):
     doctor_names = [d.name for d in Doctor.objects.all()]
     f = ReserveForm(request.POST, doctors=doctor_names, patient="")
 
     if f.is_valid():
+        # print(f)
         doc_obj = Doctor.objects.filter(name=f.cleaned_data["doctor"]).get()
         date_obj = f.cleaned_data["timeslot"]
         bookings = len(Reservation.objects.filter(timeslot=date_obj, doctor=doc_obj))
         r = " " if bookings < MAX_DAILY_RESERVATIONS else "This day is fully booked"
-
-        AppStream().update(text=r, id="check_date_result")
+        return HttpResponse(r)
 
     return HttpResponse("")

@@ -1,5 +1,3 @@
-<turbo-frame id="reservations_frame">
-	{% if user_login %}
-		<a href=past_reservations>Past reservations</a>
-	{% endif %}
-</turbo-frame>
+{% if user_login %}
+	<a hx-post="/past_reservations" hx-target="#main_box">Past reservations</a>
+{% endif %}

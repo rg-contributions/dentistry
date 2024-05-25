@@ -1,15 +1,17 @@
-<turbo-frame id="login_logout_frame">
-	{% if not user_login %}
-	<form action=do_login method="POST">
-		{% csrf_token %}
-		<table >{{ login_form.as_table }}
+{% if login_error %}
+	<table>
+		<tr><td>Error: {{ login_error }}</td></tr>
+		<tr><td><a hx-post="/login_frame" hx-target="#loc_login_frame">Try again</a></td></tr>
+	</table>
+{% elif not user_login %}
+	<form>
+		<table>
+			{{ login_form.as_table }}
 			<tr>
-			<td><input type="submit" value="Login"></td>
-			<td>{{ login_result }}</td>
-		</tr>
+				<td><input type="submit" value="Login" hx-post="/do_login" hx-target="#loc_login_frame"></td>
+			</tr>
 		</table>
 	</form>
 {% else %}
-	Hi, {{ user_login }}! <a href=do_logout>Logout</a>
+	Hi, {{ user_login }}! <a hx-post="/do_logout" hx-target="#loc_login_frame">Logout</a>
 {% endif %}
-</turbo-frame>

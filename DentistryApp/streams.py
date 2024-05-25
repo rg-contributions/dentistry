@@ -1,5 +1,5 @@
-import turbo
+# import turbo
 
 
-class AppStream(turbo.Stream):
-    pass
+# class AppStream(turbo.Stream):
+#     pass

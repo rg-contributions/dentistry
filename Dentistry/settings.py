@@ -32,8 +32,9 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     "DentistryApp",
-    "turbo",
-    "channels",
+    "django_htmx",
+    # "turbo",
+    # "channels",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -42,21 +43,22 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
 ]
 
-CHANNEL_LAYERS = {
-    "default": {
-        # You will need to `pip install channels_redis` and configure a redis instance.
-        # Using InMemoryChannelLayer will not work as the memory is not shared between threads.
-        # See https://channels.readthedocs.io/en/latest/topics/channel_layers.html
-        "BACKEND": "channels_redis.core.RedisChannelLayer",
-        "CONFIG": {
-            "hosts": [("127.0.0.1", 6379)],
-        },
-    }
-}
+# CHANNEL_LAYERS = {
+#     "default": {
+#         # You will need to `pip install channels_redis` and configure a redis instance.
+#         # Using InMemoryChannelLayer will not work as the memory is not shared between threads.
+#         # See https://channels.readthedocs.io/en/latest/topics/channel_layers.html
+#         "BACKEND": "channels_redis.core.RedisChannelLayer",
+#         "CONFIG": {
+#             "hosts": [("127.0.0.1", 6379)],
+#         },
+#     }
+# }
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
+    "django_htmx.middleware.HtmxMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",

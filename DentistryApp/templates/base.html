@@ -1,39 +1,32 @@
 {% load static %}
-{% load turbo_streams %}
+<script src="{% static 'htmx.min.js' %}" defer></script>
 
 <!doctype html>
 <html lang="en" class="no-js">
 <head>
     <meta charset="utf-8">
     <title>Maxim's Super Dentistry</title>
-    <link rel="stylesheet" href={% static "/style.css" %}>
+    <link rel="stylesheet" href="{% static 'style.css' %}"/>
 	<link rel="shortcut icon" href="{% static 'favicon.ico' %}"/>
-
-	<!-- should be at the end of head; subscribe should be after head.html -->
-	{% include "turbo/head.html" %}
-	{% turbo_subscribe 'DentistryApp:AppStream' %}
 </head>
 
-<body>
+<body hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
 	<header>
-		<div id="logo"><turbo-frame id="home_frame0"><a href="/home">
-			<img src={% static "/logo.png" %}></a></turbo-frame>Maxim's Super Dentistry</div>
+		<div id="logo">
+			<a href="/home"><img src="{% static '/logo.png' %}"></a>
+			Maxim's Super Dentistry
+		</div>
 		<p></p>
-		<nav>  
+		<nav>
 			<ul>
-				<li><turbo-frame id="home_frame1"><a href="/home">Home</a></turbo-frame></li>
-				<li>{% include "login_logout_frame.html" %}</li>
-				<li>{% include "register_frame.html" %}</li>
-				<li>{% include "reservations_frame.html" %}</li>
+				<li id="loc_login_frame" hx-trigger="load,evt_login from:body" hx-get="/login_frame"></li>
+				<li hx-trigger="load,evt_login from:body" hx-get="/register_frame"></li>
+				<li hx-trigger="load,evt_login from:body" hx-get="/reservations_frame"></li>
 			</ul>
 		</nav>
 	</header>
 	
-	<section>
-		<turbo-frame id="main_box">
-			{% include "reserve_form_frame.html" %}
-		</turbo-frame>
-	</section>
+	<section id="main_box" hx-trigger="load,evt_login from:body" hx-get="/reserve_form_frame"></section>
 
 	<footer>
 		<p>Powered by <a href="https://html5-templates.com/" target="_blank" rel="nofollow">HTML5 Templates</a></p>
