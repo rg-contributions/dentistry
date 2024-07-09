@@ -1,6 +1,0 @@
-syntax: glob
-.venv/**
-**/__pycache__/**
-.pytest_cache/**
-static-prod/**
-redis/**
