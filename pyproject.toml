@@ -1,21 +1,23 @@
-[tool.poetry]
-name = "dentistry-2024"
+[project]
+name = "dentistry"
 version = "0.1.0"
 description = ""
-authors = ["Your Name <you@example.com>"]
+authors = [{ name = "Maxim Mozgovoy", email = "mozgovoy@u-aizu.ac.jp" }]
+requires-python = "~=3.10"
+dependencies = [
+    "Django>=5.0.0,<6",
+    "django-htmx>=1.17.3,<2",
+]
 
-[tool.poetry.dependencies]
-python = "^3.10"
-Django = "^5.0.0"
-django-htmx = "^1.17.3"
-
-[tool.poetry.dev-dependencies]
-pylint-django = "^2.5.3"
-waitress = "^3.0.0"
-whitenoise = "^6.0.0"
-uvicorn = "^0.29.0"
-pytest-django = "^4.5.2"
+[dependency-groups]
+dev = [
+    "pylint-django>=2.5.3,<3",
+    "waitress>=3.0.0,<4",
+    "whitenoise>=6.0.0,<7",
+    "uvicorn>=0.29.0,<0.30",
+    "pytest-django>=4.5.2,<5",
+]
 
 [build-system]
-requires = ["poetry-core>=1.0.0"]
-build-backend = "poetry.core.masonry.api"
+requires = ["hatchling"]
+build-backend = "hatchling.build"
